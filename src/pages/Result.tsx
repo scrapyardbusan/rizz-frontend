@@ -1,111 +1,138 @@
 import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import bg from "../assets/rizz_background.svg";
 
+const parseContent = (content) => {
+  const lines = content.split("\n").map((line) => line.trim());
+  const extractedData = {
+    level: "",
+    translation: "",
+    explanation: "",
+    solutions: [],
+  };
+  let currentSection = "";
+
+  lines.forEach((line) => {
+    if (line.includes("레벨")) {
+      const levelMatch = line.match(/\d+/);
+      extractedData.level = levelMatch ? levelMatch[0] : "알 수 없음";
+      currentSection = "level";
+    } else if (line.includes("언어 해석")) {
+      extractedData.translation = "";
+      currentSection = "translation";
+    } else if (line.includes("간단한 부가 설명")) {
+      extractedData.explanation = "";
+      currentSection = "explanation";
+    } else if (line.includes("해결법")) {
+      extractedData.solutions = [];
+      currentSection = "solutions";
+    } else if (line.startsWith("BEST")) {
+      extractedData.solutions.push(line);
+      currentSection = "solutions";
+    } else {
+      if (currentSection === "translation") {
+        extractedData.translation += ` ${line}`;
+      } else if (currentSection === "explanation") {
+        extractedData.explanation += ` ${line}`;
+      } else if (currentSection === "solutions") {
+        extractedData.solutions[
+          extractedData.solutions.length - 1
+        ] += ` ${line}`;
+      }
+    }
+  });
+  return extractedData;
+};
+
 function Result() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const response =
+    location.state?.response?.data?.choices?.[0]?.message?.content;
+  const parsedData = response ? parseContent(response) : null;
+
   return (
     <div
-      className="min-h-screen flex items-start justify-start pt-16 p-4 md:p-8 relative overflow-hidden"
-      style={{
-        backgroundImage: `url(${bg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}>
-      <div className="max-w-none w-full flex flex-col items-center">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1
-            className="text-[90px] font-black bg-gradient-to-r from-[#F34164] to-[#AA55F3] text-transparent bg-clip-text drop-shadow-lg"
-            style={{
-              fontFamily: "Pretendard",
-            }}>
-            Rizz AI
-          </h1>
+      className="min-h-screen flex flex-col items-center justify-center p-6 bg-cover bg-center"
+      style={{ backgroundImage: `url(${bg})` }}>
+      <div className="text-center mb-6 flex flex-col items-center justify-start mt-2">
+        <h1
+          className="text-[90px] font-black bg-gradient-to-r from-[#F34164] to-[#AA55F3] text-transparent bg-clip-text drop-shadow-lg"
+          style={{ fontFamily: "Pretendard" }}>
+          Rizz AI
+        </h1>
+        <p className="text-xl text-gray-600 font-medium">
+          연애 바보들을 위한 상남자의 여자친구 언어 해석기
+        </p>
+      </div>
 
-          <p className="text-xl text-gray-600 font-medium">
-            여자 친구 언어 해석기
-          </p>
-        </div>
+      <div
+        style={{
+          background: "#FDEBF6",
+          boxShadow: "10px 10px 20px rgba(0, 0, 0, 0.10)",
+          borderRadius: "30px",
+          padding: "20px",
+          width: "1000px",
+        }}
+        className="text-center">
+        {parsedData ? (
+          <>
+            <div className="flex justify-between items-center px-6 mt-4">
+              <h2 className="text-[25px] font-bold text-gray-800">Result</h2>
+              <div className="flex items-center text-[#EC3750] text-[40px] font-extrabold">
+                <div>Lv.</div>
+                <div>{parsedData.level}</div>
+              </div>
+            </div>
 
-        {/* 결과 정보 박스 */}
-        <div
-          className="p-6 shadow-lg relative"
-          style={{
-            width: "1000px",
-            background: "#FFF5F8",
-            borderRadius: "20px",
-            boxShadow: "10px 10px 20px rgba(0, 0, 0, 0.10)",
-          }}>
-          {/* Lv.6 & 감정 상태 */}
-          <div className="absolute top-6 right-6 text-right">
-            <h2 className="text-4xl font-bold text-[#F34164]">Lv.6</h2>
-            <p className="text-[#EC3750] font-medium text-sm mt-1">
-              불타오르지는 않지만 꽤 삐침.
-            </p>
-          </div>
-
-          {/* 번역 결과 */}
-          <h2 className="text-2xl font-bold mb-4 text-[#F34164]">
-            번역 결과
-          </h2>
-
-          <p className="text-lg text-gray-800 font-medium leading-relaxed">
-            <span className="text-gray-600">"좀 지친다. 나 그냥 잘게"</span> <br />
-            → <span className="font-semibold text-black">
-              "지금 너랑 이야기하는 게 힘들다. 더 대화하면 화만 날 것 같으니까 그냥 잔다."
-            </span>
-          </p>
-
-          <p className="mt-4 text-gray-700">
-            추가로 <span className="font-semibold">"잘게"</span>라고 한 걸 보면,
-            감정 소모로 인해 지쳐서 일단 피하는 느낌.
-          </p>
-        </div>
-
-        {/* 해결책 박스 */}
-        <div
-          className="mt-6 p-6 shadow-lg"
-          style={{
-            width: "1000px",
-            background: "#FFF5F8",
-            borderRadius: "20px",
-            boxShadow: "10px 10px 20px rgba(0, 0, 0, 0.10)",
-          }}>
-          <h2 className="text-2xl font-bold mb-4 text-[#AA55F3]">
-            Rizz’s Solutions
-          </h2>
-
-          <div className="space-y-4">
-            <div className="p-4 bg-white rounded-lg shadow">
-              <h3 className="text-lg font-bold">BEST 1</h3>
-              <p className="text-gray-800">
-                "여보세요? 고객님? 제 마음속에 계신데요? 여보세요? 잠드셨나요?"
-              </p>
-              <p className="text-sm text-gray-500">
-                💡 이걸 톡으로 보내거나 음성 메시지로 장난스럽게 보내면, 살짝 피식할 수도 있음
+            <div className="mt-4 text-left ml-6">
+              <p className="text-lg text-gray-800">
+                {parsedData.translation && (
+                  <>
+                    {parsedData.translation.split(" → ").map((text, index) => (
+                      <React.Fragment key={index}>
+                        {index > 0 && " → "} {text}
+                        <br />
+                      </React.Fragment>
+                    ))}
+                  </>
+                )}
               </p>
             </div>
 
-            <div className="p-4 bg-white rounded-lg shadow">
-              <h3 className="text-lg font-bold">BEST 2</h3>
-              <p className="text-gray-800">
-                "아니 벌써 꿈나라 가신다고요? 내 꿈에 초대장 보냈는데, 확인하고 오시면 됩니다."
-              </p>
-              <p className="text-sm text-gray-500">
-                💡 장난스럽게 꿈에서 만나자고 하면 풀릴 수도 있음
-              </p>
+            <div className="mt-4 text-left ml-6">
+              <p className="text-lg text-gray-800">{parsedData.explanation}</p>
             </div>
 
-            <div className="p-4 bg-white rounded-lg shadow">
-              <h3 className="text-lg font-bold">BEST 3</h3>
-              <p className="text-gray-800">
-                "(귀여운 강아지나 고양이 움짤 보내면서) 이 친구가 내 상태야. 벌써 반성 중이야."
-              </p>
-              <p className="text-sm text-gray-500">
-                💡 귀여운 이미지로 감정 완화 유도
-              </p>
+            <div className="mt-6 text-left ml-6">
+              <h3 className="text-xl font-semibold text-[#000000]">
+                Rizz’s Solutions
+              </h3>
+              <ul className="mt-4 space-y-2">
+                {parsedData.solutions.map((solution, index) => {
+                  const isTip = index % 2 === 1;
+                  return (
+                    <li
+                      key={index}
+                      className={`text-lg ${
+                        isTip ? "text-black text-sm" : "text-[#EC3750] text-xl"
+                      }`}>
+                      {solution}
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
-          </div>
-        </div>
+
+            <button
+              onClick={() => navigate("/")}
+              className="mt-6 px-6 py-2 bg-[#F97198] text-white rounded-lg hover:bg-pink-600 transition">
+              돌아가기
+            </button>
+          </>
+        ) : (
+          <p className="text-xl text-red-500">데이터가 없습니다.</p>
+        )}
       </div>
     </div>
   );

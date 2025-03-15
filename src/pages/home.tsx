@@ -1,15 +1,33 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import { useNavigate } from "react-router-dom"; // useNavigate import
 import bg from "../assets/rizz_background.svg";
 
 function Home() {
   const [message, setMessage] = useState("");
-  const navigate = useNavigate(); // navigate 훅 사용
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/result")
+    const data = { text: message };
+
+    try {
+      const res = await fetch("http://192.168.0.10:8080/rizz", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+      console.log("서버 응답:", result); // 서버 응답 콘솔에 출력
+
+      // 응답을 /result 페이지로 전달
+      navigate("/result", { state: { response: result } });
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -20,50 +38,42 @@ function Home() {
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}>
-      <div className="max-w-none w-full flex flex-col items-center">
+      <div className="flex flex-col items-center justify-start w-full h-full">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-10 mt-2">
           <h1
             className="text-[90px] font-black bg-gradient-to-r from-[#F34164] to-[#AA55F3] text-transparent bg-clip-text drop-shadow-lg"
-            style={{
-              fontFamily: "Pretendard",
-            }}>
+            style={{ fontFamily: "Pretendard" }}>
             Rizz AI
           </h1>
-
           <p className="text-xl text-gray-600 font-medium">
-            여자 친구 언어 해석기
+            연애 바보들을 위한 상남자의 여자친구 언어 해석기
           </p>
         </div>
 
         {/* Input Form */}
         <form
           onSubmit={handleSubmit}
-          className="relative w-full flex justify-center">
+          className="relative w-full flex justify-center mt-4">
           <div
-            className="relative flex items-center max-w-none"
+            className="relative flex items-center justify-center"
             style={{
               background: "#FDEBF6",
               boxShadow: "10px 10px 20px rgba(0, 0, 0, 0.10)",
               borderRadius: "30px",
-              height: "auto",
-              width: "1000px",
-              position: "relative",
               padding: "20px",
+              width: "1000px",
             }}>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="번역이 필요한 여자친구의 메세지를 입력하세요."
+              placeholder="‘나 그냥 잘게’라는 그녀의 신호, 그게 사실은 ‘지구 멸망’이란 뜻일 수도 있음."
               className="w-full text-lg bg-transparent focus:outline-none px-4"
               style={{
                 fontFamily: "Pretendard",
-                fontWeight: "300",
-                minHeight: "100px", // 최소 높이 지정
-                maxHeight: "300px", // 너무 커지지 않도록 제한
-                overflowWrap: "break-word", // 자동 줄바꿈
-                wordBreak: "break-word",
-                resize: "none", // 크기 조절 방지
+                minHeight: "100px",
+                maxHeight: "300px",
+                resize: "none",
               }}
             />
             <button
@@ -83,21 +93,6 @@ function Home() {
             </button>
           </div>
         </form>
-
-        {/* Middle Text */}
-        <p className="text-center text-gray-600 font-medium my-4">
-          Rizz AI 가 제시하는 해결책에 대한 책임은 본인에게 있습니다. <br />
-        </p>
-        <p
-          style={{
-            marginTop: "-10px",
-            color: "#EC3750",
-            fontSize: "20px",
-            fontFamily: "Pretendard",
-            fontWeight: "500",
-          }}>
-          But trust me, it works!
-        </p>
       </div>
     </div>
   );
