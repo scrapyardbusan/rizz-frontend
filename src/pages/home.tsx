@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import bg from "../assets/rizz_background.svg";
+import bg from "../assets/rizz_background.png";
 
 function Home() {
   const [message, setMessage] = useState("");

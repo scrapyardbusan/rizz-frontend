@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import bg from "../assets/rizz_background.svg";
+import bg from "../assets/rizz_background.png";
 
 // ParsedData 타입 정의
 type ParsedData = {
