@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.js": "/rizz-frontend/static/js/main.124f5878.js",
+    "main.js": "/rizz-frontend/static/js/main.a3b8eca7.js",
     "static/js/453.5f2cc2e4.chunk.js": "/rizz-frontend/static/js/453.5f2cc2e4.chunk.js",
     "static/media/rizz_background.svg": "/rizz-frontend/static/media/rizz_background.09fb8be187924d3042160553a27356a8.svg",
     "index.html": "/rizz-frontend/index.html",
-    "main.124f5878.js.map": "/rizz-frontend/static/js/main.124f5878.js.map",
+    "main.a3b8eca7.js.map": "/rizz-frontend/static/js/main.a3b8eca7.js.map",
     "453.5f2cc2e4.chunk.js.map": "/rizz-frontend/static/js/453.5f2cc2e4.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.124f5878.js"
+    "static/js/main.a3b8eca7.js"
   ]
 }
