@@ -2,13 +2,22 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import bg from "../assets/rizz_background.svg";
 
-const parseContent = (content) => {
+// ParsedData 타입 정의
+type ParsedData = {
+  level: string;
+  translation: string;
+  explanation: string;
+  solutions: string[];
+};
+
+// content를 파싱하는 함수
+const parseContent = (content: string): ParsedData => {
   const lines = content.split("\n").map((line) => line.trim());
-  const extractedData = {
+  const extractedData: ParsedData = {
     level: "",
     translation: "",
     explanation: "",
-    solutions: [],
+    solutions: [], // solutions 배열을 string[]로 정의
   };
   let currentSection = "";
 
@@ -27,7 +36,7 @@ const parseContent = (content) => {
       extractedData.solutions = [];
       currentSection = "solutions";
     } else if (line.startsWith("BEST")) {
-      extractedData.solutions.push(line);
+      extractedData.solutions.push(line); // solutions에 문자열 추가
       currentSection = "solutions";
     } else {
       if (currentSection === "translation") {
