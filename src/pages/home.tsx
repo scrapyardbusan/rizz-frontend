@@ -12,7 +12,7 @@ function Home() {
     const data = { text: message };
 
     try {
-      const res = await fetch("http://192.168.0.10:8080/rizz", {
+      const res = await fetch("http://3.36.113.92:8080/rizz", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
